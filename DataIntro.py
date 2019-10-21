@@ -7,9 +7,6 @@ Created on Mon Oct 21 13:23:31 2019
 """
 
 import numpy as np
+import pandas as pd
 
-a = np.array([[1,2], [3, 4], [5, 6]])
 
-# An example of integer array indexing.
-# The returned array will have shape (3,) and
-print(a[[0, 0, 0], [0, 0, 0]])  # Prints "[1 4 5]"
