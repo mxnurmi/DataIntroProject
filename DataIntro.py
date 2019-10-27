@@ -56,7 +56,11 @@ dates = []
 dailyTotals = []
 previousDay = datetime.date(2018, 1, 1)
 total =  0
-for i,day in enumerate(df['Show Time'], start=1):
+
+#Vika: enumeraten i ei mene indexin mukaan joten nan kohdissa se alkaa hyppimään arvojen yli
+#for i,day in enumerate(df['Show Time'], start=1):
+    
+for index, row in df.iterrows():
     print(day)
     while i not in df.index:
         i = i + 1
