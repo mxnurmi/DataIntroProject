@@ -48,6 +48,7 @@ for i in df['Show Time']:
     
 df.insert(1, "Holiday", holiday, True)
 
+#TODO säädatan käsittely ja sen yhdistäminen leffadataan
 
 #TODO: aika vertailu joka kääntää jokaisen kellonajan ja päivämäärän lähimpään tuntiin ja tekee 
 #sen pohjalta vertauksen sen hetkisestä säästä
@@ -56,22 +57,25 @@ dates = []
 dailyTotals = []
 previousDay = datetime.date(2018, 1, 1)
 total =  0
-
-#Vika: enumeraten i ei mene indexin mukaan joten nan kohdissa se alkaa hyppimään arvojen yli
-#for i,day in enumerate(df['Show Time'], start=1):
     
 for index, row in df.iterrows():
-    print(day)
-    while i not in df.index:
-        i = i + 1
-    print(df['Admissions'][i])
-    if previousDay == day.date():
-        total += df['Admissions'][i]
+#    print(df['Show Time'][index])
+    if previousDay == df['Show Time'][index].date():
+        total += df['Admissions'][index]
     else: 
         dates.append(previousDay)
-        previousDay = day.date()
+        previousDay = df['Show Time'][index].date()
         dailyTotals.append(total)
-        total = df['Admissions'][i]
+        total = df['Admissions'][index]   
+#Adding the final day as the iteration won't cover it:
+dates.append(previousDay)
+dailyTotals.append(total)
+
+DTot = pd.DataFrame()
+DTot['Date'] = dates
+DTot['Attendances'] = dailyTotals
+        
+#TODO: suosituimmat päivät ja niide attribuutit
 
 #Exploration
 count = df.groupby('Event').count()
