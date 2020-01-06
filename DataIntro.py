@@ -17,6 +17,7 @@ def replacer(dataColumn, *args):
         dataColumn = dataColumn.str.replace(i, '')
     return dataColumn
 
+#loading the movie dataset
 new = pd.read_csv('show-list.csv', delimiter = ';', encoding='cp1252', 
                  usecols=[0, 1, 3, 4, 9, 10, 11, 12, 14, 18, 21])
 
@@ -24,9 +25,10 @@ df = new.copy()
 
 df.rename(columns={'Unnamed: 1': 'Time'}, inplace=True)
 
+#loading the weather dataset
 weather = pd.read_csv('weather.csv', delimiter = ',')
 
-#
+#preprocessing the main dataset by removing extra text elements and converting the date to datetime
 df['Show Time'] = df['Show Time'].str.replace('Accounting Date: ', '')
 df['Show Time'] = df[['Show Time']].fillna(method='ffill')
 df = df.dropna(subset=['Event'])
@@ -35,10 +37,11 @@ df['Show Time'] = pd.to_datetime(df['Show Time'] + ' ' + df['Time'])
 
 df = df.astype({'Admissions': 'int'})
 
+#removing any extra text elements from the Event column titles
 df['Event'] = replacer(df['Event'], ')', '(', '2D', '3D', 'dub', 'orig', 'swe')
 df['Event'] = df['Event'].str.rstrip()
 
-#Holidays
+#Getting the Finnish holidays for later prediction
 fin_holidays = holidays.FI()
 holiday = []
 columns = list(df)
@@ -53,11 +56,13 @@ df.insert(1, "Holiday", holiday, True)
 #TODO: aika vertailu joka kääntää jokaisen kellonajan ja päivämäärän lähimpään tuntiin ja tekee 
 #sen pohjalta vertauksen sen hetkisestä säästä
 
+#some data processing
 dates = []
 dailyTotals = []
 previousDay = datetime.date(2018, 1, 1)
 total =  0
     
+#summarizing the preprocessed data
 for index, row in df.iterrows():
 #    print(df['Show Time'][index])
     if previousDay == df['Show Time'][index].date():
@@ -75,7 +80,7 @@ DTot = pd.DataFrame()
 DTot['Date'] = dates
 DTot['Attendances'] = dailyTotals
         
-#TODO: suosituimmat päivät ja niide attribuutit
+#TODO: finding the most popular days and the elements that contribut to the popularity
 
 #Exploration
 count = df.groupby('Event').count()
